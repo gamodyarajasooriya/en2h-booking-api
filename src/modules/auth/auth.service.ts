@@ -50,8 +50,18 @@ export class AuthService {
     if (!isPasswordValid) throw new UnauthorizedException('Invalid credentials');
 
     const payload = { sub: user.id, email: user.email };
-    const accessToken = this.jwtService.sign(payload, { expiresIn: '15m' });
-    const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
+    
+    // Access Token (Short-lived)
+    const accessToken = this.jwtService.sign(payload, { 
+      secret: process.env.JWT_SECRET || 'fallbackAccessKey',
+      expiresIn: '15m' 
+    });
+
+    // Refresh Token (Long-lived) - Distinct Secret Used Here
+    const refreshToken = this.jwtService.sign(payload, { 
+      secret: process.env.JWT_REFRESH_SECRET || 'fallbackRefreshKey',
+      expiresIn: '7d' 
+    });
 
     // Save hashed refresh token to DB
     const hashedRt = await bcrypt.hash(refreshToken, 10);
@@ -64,6 +74,15 @@ export class AuthService {
   }
 
   public async refreshTokens(userId: string, refreshToken: string) {
+    // Verify the signature and expiration of the refresh token using the distinct refresh secret
+    try {
+      this.jwtService.verify(refreshToken, {
+        secret: process.env.JWT_REFRESH_SECRET || 'fallbackRefreshKey',
+      });
+    } catch (error) {
+      throw new UnauthorizedException('Access Denied');
+    }
+
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user || !user.refreshToken) throw new UnauthorizedException('Access Denied');
 
@@ -71,7 +90,10 @@ export class AuthService {
     if (!rtMatches) throw new UnauthorizedException('Access Denied');
 
     const payload = { sub: user.id, email: user.email };
-    const accessToken = this.jwtService.sign(payload, { expiresIn: '15m' });
+    const accessToken = this.jwtService.sign(payload, { 
+      secret: process.env.JWT_SECRET || 'fallbackAccessKey',
+      expiresIn: '15m' 
+    });
 
     return { access_token: accessToken };
   }
