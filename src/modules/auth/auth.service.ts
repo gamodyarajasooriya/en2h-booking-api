@@ -43,25 +43,36 @@ export class AuthService {
   }
 
   public async login(dto: LoginDto) {
-    // 1. Resolve user identity
-    const user = await this.prisma.user.findUnique({
-      where: { email: dto.email },
+    const user = await this.prisma.user.findUnique({ where: { email: dto.email } });
+    if (!user) throw new UnauthorizedException('Invalid credentials');
+
+    const isPasswordValid = await bcrypt.compare(dto.password, user.password);
+    if (!isPasswordValid) throw new UnauthorizedException('Invalid credentials');
+
+    const payload = { sub: user.id, email: user.email };
+    const accessToken = this.jwtService.sign(payload, { expiresIn: '15m' });
+    const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
+
+    // Save hashed refresh token to DB
+    const hashedRt = await bcrypt.hash(refreshToken, 10);
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { refreshToken: hashedRt },
     });
 
-    if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
+    return { access_token: accessToken, refresh_token: refreshToken };
+  }
 
-    // 2. Authenticate secret credentials
-    const isPasswordValid = await bcrypt.compare(dto.password, user.password);
-    if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
+  public async refreshTokens(userId: string, refreshToken: string) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user || !user.refreshToken) throw new UnauthorizedException('Access Denied');
 
-    // 3. Issue Tokenized Identity Envelope
+    const rtMatches = await bcrypt.compare(refreshToken, user.refreshToken);
+    if (!rtMatches) throw new UnauthorizedException('Access Denied');
+
     const payload = { sub: user.id, email: user.email };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+    const accessToken = this.jwtService.sign(payload, { expiresIn: '15m' });
+
+    return { access_token: accessToken };
   }
 }

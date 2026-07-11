@@ -26,4 +26,11 @@ export class AuthController {
   public async login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto);
   }
+
+  @Post('refresh')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Refresh access token using a valid refresh token' })
+  public async refresh(@Body('userId') userId: string, @Body('refreshToken') refreshToken: string) {
+    return this.authService.refreshTokens(userId, refreshToken);
+  }
 }
