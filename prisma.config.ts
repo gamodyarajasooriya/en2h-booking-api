@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { defineConfig, env } from "prisma/config";
+import { defineConfig } from "prisma/config";
 
 export default defineConfig({
   schema: "prisma/schema.prisma",
@@ -8,6 +8,6 @@ export default defineConfig({
     seed: "ts-node prisma/seed.ts",
   },
   datasource: {
-    url: env("DATABASE_URL"), // Database URL is loaded from environment variables here
+    url: process.env.DATABASE_URL || "postgresql://postgres:postgres@localhost:5432/en2h_booking_db?schema=public",
   },
 });
