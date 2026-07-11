@@ -72,8 +72,9 @@ npm run test
 ```
 
 ## 7. API Documentation
-* **Interactive Swagger UI**: Available at `http://localhost:3000/api/docs` while the server is running.
-* **Postman Collection**: A pre-configured `en2h_booking_api_collection.json` file is available at the root of the project. You can import this directly into Postman for rapid manual testing.
+* **Live Deployed API (Swagger UI):** https://en2h-booking-api-yxwe.onrender.com/api/docs
+* **Interactive Local Swagger UI:** Available at `http://localhost:3000/api/docs` while the server is running.
+* **Postman Collection:** A pre-configured `en2h_booking_api_collection.json` file is available at the root of the project. You can import this directly into Postman for rapid manual testing.
 
 ## 8. Assumptions Made
 * **Access Control Model**: The assessment specification did not request distinct user roles (such as separating admin users from standard staff). Therefore, a uniform authorization approach was taken: any authenticated user with a valid JWT has permissions to manage services and view/update booking data. Booking creation (`POST /bookings`) is left fully public so customers can book appointments without signing up.
