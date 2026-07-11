@@ -50,13 +50,19 @@ export class BookingsService {
   }
 
   public async findAll(query: BookingQueryDto) {
-    const { page = 1, limit = 10, status } = query;
+    const { page = 1, limit = 10, status, search } = query;
     const skip = (page - 1) * limit;
 
     // Build conditional where clause dynamically
     const where: any = {};
     if (status) {
       where.status = status;
+    }
+    if (search) {
+      where.OR = [
+        { customerName: { contains: search, mode: 'insensitive' } },
+        { customerEmail: { contains: search, mode: 'insensitive' } },
+      ];
     }
 
     // Execute parallel database fetching for optimization parameters

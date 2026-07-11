@@ -1,4 +1,4 @@
-import { IsEnum, IsInt, IsOptional, Min } from 'class-validator';
+import { IsEnum, IsInt, IsOptional, Min, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { BookingStatus } from '@prisma/client';
@@ -22,4 +22,9 @@ export class BookingQueryDto {
   @IsOptional()
   @IsEnum(BookingStatus)
   public status?: BookingStatus;
+
+  @ApiPropertyOptional({ example: 'Kasun', description: 'Search term for customer name or email' })
+  @IsOptional()
+  @IsString()
+  public search?: string;
 }
