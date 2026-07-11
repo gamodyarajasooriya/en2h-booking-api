@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, UseGuards, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { BookingsService } from './bookings.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingStatusDto } from './dto/update-booking-status.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { BookingQueryDto } from './dto/booking-query.dto';
 
 @ApiTags('Booking Management')
 @Controller('bookings')
@@ -22,12 +23,11 @@ export class BookingsController {
 
   @Get()
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard) // Only authenticated personnel can view metrics
-  @ApiOperation({ summary: 'Get all bookings (Protected)' })
-  @ApiResponse({ status: 200, description: 'Return all bookings registry.' })
-  @ApiResponse({ status: 401, description: 'Unauthorized context token.' })
-  public async findAll() {
-    return this.bookingsService.findAll();
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get all bookings with pagination and status filtering (Protected)' })
+  @ApiResponse({ status: 200, description: 'Return paginated registry data.' })
+  public async findAll(@Query() query: BookingQueryDto) {
+    return this.bookingsService.findAll(query);
   }
 
   @Get(':id')

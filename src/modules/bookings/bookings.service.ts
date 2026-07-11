@@ -3,6 +3,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingStatusDto } from './dto/update-booking-status.dto';
 import { BookingStatus } from '@prisma/client';
+import { BookingQueryDto } from './dto/booking-query.dto';
 
 @Injectable()
 export class BookingsService {
@@ -48,10 +49,37 @@ export class BookingsService {
     }
   }
 
-  public async findAll() {
-    return this.prisma.booking.findMany({
-      include: { service: true }, // Rich resource composition mapping
-    });
+  public async findAll(query: BookingQueryDto) {
+    const { page = 1, limit = 10, status } = query;
+    const skip = (page - 1) * limit;
+
+    // Build conditional where clause dynamically
+    const where: any = {};
+    if (status) {
+      where.status = status;
+    }
+
+    // Execute parallel database fetching for optimization parameters
+    const [data, total] = await Promise.all([
+      this.prisma.booking.findMany({
+        where,
+        skip,
+        take: limit,
+        include: { service: true },
+        orderBy: { createdAt: 'desc' }, // Fresh bookings stay on top
+      }),
+      this.prisma.booking.count({ where }),
+    ]);
+
+    return {
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+      data,
+    };
   }
 
   public async findOne(id: string) {
