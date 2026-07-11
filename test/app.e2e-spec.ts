@@ -20,7 +20,10 @@ describe('AppController (e2e)', () => {
     return request(app.getHttpServer())
       .get('/')
       .expect(200)
-      .expect('Hello World!');
+      .expect((res) => {
+        expect(res.body.name).toBe('EN2H Booking Platform API');
+        expect(res.body.status).toBe('running');
+      });
   });
 
   afterEach(async () => {
