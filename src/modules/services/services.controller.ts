@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ServicesService } from './services.service';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { ServiceQueryDto } from './dto/service-query.dto';
 
 @ApiTags('Service Management')
 @ApiBearerAuth() // Tells Swagger that these endpoints require Bearer Auth token authorization
@@ -23,8 +24,8 @@ export class ServicesController {
   @Get()
   @ApiOperation({ summary: 'Get all services' })
   @ApiResponse({ status: 200, description: 'Return all services list.' })
-  public async findAll() {
-    return this.servicesService.findAll();
+  public async findAll(@Query() query: ServiceQueryDto) {
+    return this.servicesService.findAll(query);
   }
 
   @Get(':id')

@@ -66,16 +66,22 @@ docker-compose up --build
 ```
 
 ## 6. Running Tests
-Automated unit tests have been written using Jest to verify booking validation rules (blocking past dates and invalid service IDs). To run the test suite:
+Automated unit and E2E integration tests have been written using Jest to verify business rules and endpoint logic. To run the test suites:
 ```bash
+# Run unit tests
 npm run test
+
+# Run End-to-end integration tests
+npm run test:e2e
 ```
 
 ## 7. API Documentation
 * **Live Deployed API (Swagger UI):** https://en2h-booking-api-yxwe.onrender.com/api/docs
 * **Interactive Local Swagger UI:** Available at `http://localhost:3000/api/docs` while the server is running.
 * **Postman Collection:** A pre-configured `en2h_booking_api_collection.json` file is available at the root of the project. You can import this directly into Postman for rapid manual testing.
-* **Booking Search & Filters:** The `GET /bookings` endpoint supports `?search=` for case-insensitive matching against customer name or email, alongside `?status=` filtering and `?page=` / `?limit=` pagination parameters.
+* **Query Parameters & Search Filters:**
+  * `GET /bookings` supports `?search=` (case-insensitive customer name/email search), `?status=` filtering, and `?page=` / `?limit=` pagination.
+  * `GET /services` supports `?page=` / `?limit=` pagination.
 
 ## 8. Assumptions Made
 * **Access Control Model**: The assessment specification did not request distinct user roles (such as separating admin users from standard staff). Therefore, a uniform authorization approach was taken: any authenticated user with a valid JWT has permissions to manage services and view/update booking data. Booking creation (`POST /bookings`) is left fully public so customers can book appointments without signing up.

@@ -1,3 +1,5 @@
+import * as dotenv from 'dotenv';
+dotenv.config({ override: true });
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';

@@ -147,12 +147,22 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/services",
+              "raw": "{{baseUrl}}/services?page=1&limit=10",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "services"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
               ]
             }
           },
@@ -298,7 +308,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/bookings?page=1&limit=10&status=PENDING",
+              "raw": "{{baseUrl}}/bookings?page=1&limit=10&status=PENDING&search=Kasun",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -317,6 +327,10 @@
                 {
                   "key": "status",
                   "value": "PENDING"
+                },
+                {
+                  "key": "search",
+                  "value": "Kasun"
                 }
               ]
             }
