@@ -90,13 +90,13 @@ npm run test:e2e
 ## 9. Screenshots (System Preview)
 
 ### API Documentation & Swagger Overview
-![Swagger Overview](./screenshots/swagger-overview.png)
+![Swagger Overview](./screenshots/swagger-overview.jpeg)
 
 ### Advanced Pagination & Metadata Shape
-![Paginated Response](./screenshots/paginated-response.png)
+![Paginated Response](./screenshots/paginated-response.jpeg)
 
 ### Strict Business Rule Enforcement (Validation Error)
-![Business Rule Error](./screenshots/business-rule-error.png)
+![Business Rule Error](./screenshots/business-rule-error.jpeg)
 
 ## 10. Future Improvements
 * **Role-Based Access Control (RBAC)**: Introduce Admin and Staff roles to limit service catalog modifications strictly to managers.
