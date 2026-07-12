@@ -87,7 +87,18 @@ npm run test:e2e
 * **Access Control Model**: The assessment specification did not request distinct user roles (such as separating admin users from standard staff). Therefore, a uniform authorization approach was taken: any authenticated user with a valid JWT has permissions to manage services and view/update booking data. Booking creation (`POST /bookings`) is left fully public so customers can book appointments without signing up.
 * **Scoring Grid Point Discrepancy**: The evaluation criteria breakdown in the assessment brief sums up to 110 total marks instead of the stated 100-point maximum. To ensure complete alignment, all listed bonus requirements (Docker setup, global exception filtering, and unit tests) were implemented for total feature coverage.
 
-## 9. Future Improvements
+## 9. Screenshots (System Preview)
+
+### API Documentation & Swagger Overview
+![Swagger Overview](./screenshots/swagger-overview.png)
+
+### Advanced Pagination & Metadata Shape
+![Paginated Response](./screenshots/paginated-response.png)
+
+### Strict Business Rule Enforcement (Validation Error)
+![Business Rule Error](./screenshots/business-rule-error.png)
+
+## 10. Future Improvements
 * **Role-Based Access Control (RBAC)**: Introduce Admin and Staff roles to limit service catalog modifications strictly to managers.
 * **Automated Notifications**: Integrate a mailer service (e.g., Nodemailer or SendGrid) to send automated email confirmations to customers when their booking status changes.
 * **Caching Layer**: Add Redis caching to the public `GET /services` catalog endpoint to reduce direct query loads on the PostgreSQL database.
